@@ -100,13 +100,16 @@ class pattern:
 
 #----------FUNCTIONS----------
 
-def combineArrays(array1, array2, offset=(0, 0)):
+def combineArrays(baseArray, arrayToAdd, offset=(0, 0)):
+    array1 = baseArray.copy()
+    array2 = arrayToAdd.copy()
+    
     offX = offset[1]
     offY = offset[0]
     
     newArray = []
     for i in range(len(array1)):
-        newArray.append([0]*len(array1[0]))
+        newArray.append(array1[i].copy())
 
     for i in range(len(array2)):
         for j in range(len(array2[0])):
@@ -160,31 +163,66 @@ def identifyAnimals():
         selectedAnimals.append([animal, getattr(eval('pattern.'+locationName), animal)])
 
 
+def checkForValidLayout(layout):
+    possibleLayout = True
+
+    for i in range(5):
+        for j in range(5):
+            if layout[i][j] > 1:
+                possibleLayout = False
+
+    if possibleLayout:
+        return True
+    else:
+        return False
+
+
 def findAllLayouts():
     global totalLayouts
 
-    # runs for every aninal in selectedAnimals
-    for k in range(len(selectedAnimals)):
-        # how many times to go across x
-        for x in range(6 - len(selectedAnimals[k][1][0])):
-            # how many times to go across y
-            for y in range(6 - len(selectedAnimals[k][1])):
-                newTiles = combineArrays(tiles, selectedAnimals[k][1], (x, y))
+    # how many times to go across x
+    for x1 in range(6 - len(selectedAnimals[0][1][0])):
+        # how many times to go across y
+        for y1 in range(6 - len(selectedAnimals[0][1])):
+            tiles1 = combineArrays(tiles, selectedAnimals[0][1], (x1, y1))
 
-                possibleLayout = True
-                
-                for i in range(5):
-                    for j in range(5):
-                        if newTiles[i][j] > 1:
-                            possibleLayout = False
+            # runs if theres more than 1 animal
+            if len(selectedAnimals) > 1:
+                # how many times to go across x
+                for x2 in range(6 - len(selectedAnimals[1][1][0])):
+                    # how many times to go across y
+                    for y2 in range(6 - len(selectedAnimals[1][1])):
+                        tiles2 = combineArrays(tiles1, selectedAnimals[1][1], (x2, y2))
 
-                if possibleLayout:
-                    totalLayouts += 1
+                        # runs if the layout works for the first 2 animals
+                        if checkForValidLayout(tiles2):
+                            # runs if theres more than 2 animals
+                            if len(selectedAnimals) > 2:
+                                # how many times to go across x
+                                for x3 in range(6 - len(selectedAnimals[2][1][0])):
+                                    # how many times to go across y
+                                    for y3 in range(6 - len(selectedAnimals[2][1])):
+                                        tiles3 = combineArrays(tiles2, selectedAnimals[2][1], (x3, y3))
+                                        
+                                        if checkForValidLayout(tiles3):
+                                            totalLayouts += 1
+                            else:
+                                totalLayouts += 1
+            else:
+                totalLayouts += 1
+                                
+
+def printTotalLayouts():
+    if len(selectedAnimals) == 1:
+        print('There are', str(totalLayouts), 'total layouts for the animal', selectedAnimals[0][0])
+    elif len(selectedAnimals) == 2:
+        print('There are', str(totalLayouts), 'total layouts for the animals', selectedAnimals[0][0], 'and', selectedAnimals[1][0])
+    else:
+        print('There are', str(totalLayouts), 'total layouts for the animals', selectedAnimals[0][0] + ',', selectedAnimals[1][0] + ',', 'and', selectedAnimals[2][0])
 
 
 #----------THE MAIN STUFF----------
 
 identifyAnimals()
-print(selectedAnimals)
 findAllLayouts()
-print(totalLayouts)
+printTotalLayouts()
