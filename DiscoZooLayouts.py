@@ -9,7 +9,7 @@ selectedAnimals = []
 
 totalLayouts = 0
 
-#----------CLASS DECLARATIONS----------
+#----------CLASS DECLARATIONS-----------
 
 class pattern:
     class farm:
