@@ -218,7 +218,7 @@ def printTotalLayouts():
     elif len(selectedAnimals) == 2:
         print('There are', str(totalLayouts), 'total layouts for the animals', selectedAnimals[0][0], 'and', selectedAnimals[1][0])
     else:
-        print('There are', str(totalLayouts), 'total layouts for the animals', selectedAnimals[0][0] + ',', selectedAnimals[1][0] + ',', 'and', selectedAnimals[2][0])
+        print('There are', str(totalLayouts), 'total layouts for the animals', selectedAnimals[0][0] + ',', selectedAnimals[1][0] + ',', 'and a', selectedAnimals[2][0])
 
 
 #----------THE MAIN STUFF----------
