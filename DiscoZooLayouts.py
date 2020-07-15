@@ -12,7 +12,29 @@ totalLayouts = 0
 #----------CLASS DECLARATIONS----------
 
 class pattern:
+    def __init__(self):
+        pass
+    def __getitem__(self, i):
+        options = {
+            0 : self.farm,
+            'farm':self.farm,
+            1 : self.outback,
+            2 : self.savanna,
+            3 : self.northern,
+            4 : self.polar,
+            5 : self.jungle,
+            6 : self.jurassic,
+            7 : self.ice_age,
+        }
+        return options[i]
+
     class farm:
+        def __getitem__(self, i):
+            options = {
+                0 : self.sheep,
+                'sheep':self.sheep,
+            }
+            return options[i]
         sheep = [[1, 1, 1, 1]]
         pig = [[1, 1], [1, 1]]
         rabbit = [[1], [1], [1], [1]]
@@ -158,6 +180,9 @@ def identifyAnimals():
         animal = input(inputMSG).lower().replace(' ', '_').replace('-', '_')
         
         selectedAnimals.append([animal, getattr(eval('pattern.'+locationName), animal)])
+        #p = pattern()
+        #location = p[locationName]
+        #selectedAnimals.append([animal, p[locationName][animal]])
 
 
 def findAllLayouts():
