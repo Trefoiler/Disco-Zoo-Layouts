@@ -1,4 +1,8 @@
+import tkinter as tk
+
 #----------VARIABLE DECLARATIONS----------
+
+root = tk.Tk()
 
 # 2D array for the 5x5 tile layout
 tiles = []
