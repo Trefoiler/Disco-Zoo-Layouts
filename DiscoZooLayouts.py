@@ -107,10 +107,10 @@ class pattern:
 def combineArrays(baseArray, arrayToAdd, offset=(0, 0)):
     array1 = baseArray.copy()
     array2 = arrayToAdd.copy()
-    
+
     offX = offset[1]
     offY = offset[0]
-    
+
     newArray = []
     for i in range(len(array1)):
         newArray.append(array1[i].copy())
@@ -118,37 +118,28 @@ def combineArrays(baseArray, arrayToAdd, offset=(0, 0)):
     for i in range(len(array2)):
         for j in range(len(array2[0])):
             newArray[i+offX][j+offY] = array1[i+offX][j+offY] + array2[i][j]
-    
+
     return newArray
 
 
 def calcAnimalOptions(location):
-    if location == 'farm':
-        animals = 'sheep, pig, rabbit, horse, cow, and unicorn'
-    elif location == 'outback':
-        animals = 'kangaroo, platypus, crocodile, koala, cockatoo, and tiddalik'
-    elif location == 'savanna':
-        animals = 'zebra, hippo, giraffe, lion, elephant, and gryphon'
-    elif location == 'northern':
-        animals = 'bear, skunk, beaver, moose, fox, and sasquatch'
-    elif location == 'polar':
-        animals = 'penguin, seal, muskox, polar bear, walrus, and yeti'
-    elif location == 'jungle':
-        animals = 'monkey, toucan, gorilla, panda, tiger, and phoenix'
-    elif location == 'jurassic':
-        animals = 'diplodocus, stegosaurus, raptor, t-rex, triceraptops, and dragon'
-    elif location == 'ice age':
-        animals = 'wooly rhino, giant sloth, dire wolf, saber tooth, mammoth, and akhlut'
-    elif location == 'city':
-        animals = 'raccoon, pigeon, rat, squirrel, opossum, and sewer turtle'
-    elif location == 'moon':
-        animals = 'lunar tick, moonkey, tribble, luna moth, moonicorn, and jade rabbit'
-    elif location == 'mountain':
-        animals = 'goat, cougar, elk, eagle, coyote, and aatxe'
-    elif location == 'mars':
-        animals = 'rock, marsmot, marsmoset, rover, martian, and marsmallow'
-    
-    return animals
+    switcher = {
+        'farm':'sheep, pig, rabbit, horse, cow, and unicorn',
+        'outback':'kangaroo, platypus, crocodile, koala, cockatoo, and tiddalik',
+        'savanna':'zebra, hippo, giraffe, lion, elephant, and gryphon',
+        'northern':'bear, skunk, beaver, moose, fox, and sasquatch',
+        'polar':'penguin, seal, muskox, polar bear, walrus, and yeti',
+        'jungle':'monkey, toucan, gorilla, panda, tiger, and phoenix',
+        'jurassic':'diplodocus, stegosaurus, raptor, t-rex, triceraptops, and dragon',
+        'ice age': 'wooly rhino, giant sloth, dire wolf, saber tooth, mammoth, and akhlut',
+        'city':'raccoon, pigeon, rat, squirrel, opossum, and sewer turtle',
+        'moon':'lunar tick, moonkey, tribble, luna moth, moonicorn, and jade rabbit',
+        'mountain': 'goat, cougar, elk, eagle, coyote, and aatxe',
+        'mars': 'rock, marsmot, marsmoset, rover, martian, and marsmallow'
+
+    }
+
+    return switcher[location]
 
 
 def identifyAnimals():
@@ -160,10 +151,10 @@ def identifyAnimals():
 
     for i in range(numOfAnimals):
         animalOptions = calcAnimalOptions(locationName)
-        
+
         inputMSG = '{} animals are {}. What is animal number {}?: '.format(locationName.capitalize(), animalOptions, i+1)
         animal = input(inputMSG).lower().replace(' ', '_').replace('-', '_')
-        
+
         selectedAnimals.append([animal, getattr(eval('pattern.'+locationName), animal)])
 
 
@@ -184,6 +175,7 @@ def checkForValidLayout(layout):
 def findAllLayouts():
     global totalLayouts
 
+    # jesus christ who wrote this 
     # how many times to go across x
     for x1 in range(6 - len(selectedAnimals[0][1][0])):
         # how many times to go across y
@@ -207,14 +199,14 @@ def findAllLayouts():
                                     # how many times to go across y
                                     for y3 in range(6 - len(selectedAnimals[2][1])):
                                         tiles3 = combineArrays(tiles2, selectedAnimals[2][1], (x3, y3))
-                                        
+
                                         if checkForValidLayout(tiles3):
                                             totalLayouts += 1
                             else:
                                 totalLayouts += 1
             else:
                 totalLayouts += 1
-                                
+
 
 def printTotalLayouts():
     if len(selectedAnimals) == 1:
@@ -226,7 +218,7 @@ def printTotalLayouts():
 
 
 #----------THE MAIN STUFF----------
-
-identifyAnimals()
-findAllLayouts()
-printTotalLayouts()
+if __name__ == "__main__":
+    identifyAnimals()
+    findAllLayouts()
+    printTotalLayouts()
