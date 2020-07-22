@@ -110,31 +110,10 @@ class pattern:
 #----------FUNCTIONS----------
 
 class buttons:
-    class animalOptionsClass:
-        def animal_0():
-            global selectedAnimals, animalOptions
-            selectedAnimals.append(animalOptions[0])
-            del animalOptions[0]
-        def animal_1():
-            global selectedAnimals, animalOptions
-            selectedAnimals.append(animalOptions[1])
-            del animalOptions[1]
-        def animal_2():
-            global selectedAnimals, animalOptions
-            selectedAnimals.append(animalOptions[2])
-            del animalOptions[2]
-        def animal_3():
-            global selectedAnimals, animalOptions
-            selectedAnimals.append(animalOptions[3])
-            del animalOptions[3]
-        def animal_4():
-            global selectedAnimals, animalOptions
-            selectedAnimals.append(animalOptions[4])
-            del animalOptions[4]
-        def animal_5():
-            global selectedAnimals, animalOptions
-            selectedAnimals.append(animalOptions[5])
-            del animalOptions[5]
+    def newChosenAnimal(animalNum):
+        global selectedAnimals, animalOptions
+        selectedAnimals.append(animalOptions[animalNum])
+        del animalOptions[animalNum]
 
     class phases:
         # ask how many animals will be chosen
@@ -176,7 +155,7 @@ class buttons:
 
             animalButtons = []
             for i in range(len(animalOptions)):
-                animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[eval('buttons.animalOptionsClass.animal_'+str(x)+'()'), buttons.phases.phase3b()]).grid(row = i+1, column = 0))
+                animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[buttons.newChosenAnimal(x), buttons.phases.phase3b()]).grid(row = i+1, column = 0))
         
         # ask for chosen animal 2, if there is one
         def phase3b():
@@ -190,7 +169,7 @@ class buttons:
 
                 animalButtons = []
                 for i in range(len(animalOptions)):
-                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[eval('buttons.animalOptionsClass.animal_'+str(x)+'()'), buttons.phases.phase3c()]).grid(row = i+1, column = 0))
+                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[buttons.newChosenAnimal(x), buttons.phases.phase3c()]).grid(row = i+1, column = 0))
             else:
                 buttons.phases.phase3c()
         
@@ -206,7 +185,7 @@ class buttons:
 
                 animalButtons = []
                 for i in range(len(animalOptions)):
-                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[eval('buttons.animalOptionsClass.animal_'+str(x)+'()'), buttons.phases.phase4()]).grid(row = i+1, column = 0))
+                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[buttons.newChosenAnimal(x), buttons.phases.phase4()]).grid(row = i+1, column = 0))
             else:
                 buttons.phases.phase4()
         
