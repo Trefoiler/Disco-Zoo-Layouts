@@ -110,55 +110,6 @@ class pattern:
 #----------FUNCTIONS----------
 
 class buttons:
-    class animalNums:
-        def button_1():
-            global numOfAnimals
-            numOfAnimals = 1
-        def button_2():
-            global numOfAnimals
-            numOfAnimals = 2
-        def button_3():
-            global numOfAnimals
-            numOfAnimals = 3
-    
-    class locations:
-        def farm():
-            global locationName
-            locationName = 'farm'
-        def outback():
-            global locationName
-            locationName = 'outback'
-        def savanna():
-            global locationName
-            locationName = 'savanna'
-        def northern():
-            global locationName
-            locationName = 'northern'
-        def polar():
-            global locationName
-            locationName = 'polar'
-        def jungle():
-            global locationName
-            locationName = 'jungle'
-        def jurassic():
-            global locationName
-            locationName = 'jurassic'
-        def ice_age():
-            global locationName
-            locationName = 'ice_age'
-        def city():
-            global locationName
-            locationName = 'city'
-        def moon():
-            global locationName
-            locationName = 'moon'
-        def mountain():
-            global locationName
-            locationName = 'mountain'
-        def mars():
-            global locationName
-            locationName = 'mars'
-
     class animalOptionsClass:
         def animal_0():
             global selectedAnimals, animalOptions
@@ -192,58 +143,40 @@ class buttons:
 
             label_askNumOfAnimals = tk.Label(root, text = 'How many animals are you going to chose?')
             label_askNumOfAnimals.grid(row=0, column=0)
-
-            numButtons = [
-                tk.Button(root, text='1', command = lambda:[buttons.animalNums.button_1(), buttons.phases.phase2()]),
-                tk.Button(root, text='2', command = lambda:[buttons.animalNums.button_2(), buttons.phases.phase2()]),
-                tk.Button(root, text='3', command = lambda:[buttons.animalNums.button_3(), buttons.phases.phase2()])
-            ]
-
-            for i in range(len(numButtons)):
-                numButtons[i].grid(row = i+1, column = 0)
+            
+            for n in range(1, 4):
+                tk.Button(root, text=n, command = lambda x=n:buttons.phases.phase2(x)).grid(row = n, column = 0)
 
         # ask for the location
-        def phase2():
+        def phase2(numAnimals):
+            global numOfAnimals
+            numOfAnimals = numAnimals
+
             clearScreen()
 
             label_askLocation = tk.Label(root, text = 'What location do you want to choose animals from?')
             label_askLocation.grid(row=0, column=0)
 
-            locationButtons = [
-                tk.Button(root, text = 'Farm', command = lambda:[buttons.locations.farm(), buttons.phases.phase3a()]),
-                tk.Button(root, text = 'Outback', command = lambda:[buttons.locations.outback(), buttons.phases.phase3a()]),
-                tk.Button(root, text = 'Savanna', command = lambda:[buttons.locations.savanna(), buttons.phases.phase3a()]),
-                tk.Button(root, text = 'Northern', command = lambda:[buttons.locations.northern(), buttons.phases.phase3a()]),
-                tk.Button(root, text = 'Polar', command = lambda:[buttons.locations.polar(), buttons.phases.phase3a()]),
-                tk.Button(root, text = 'Jungle', command = lambda:[buttons.locations.jungle(), buttons.phases.phase3a()]),
-                tk.Button(root, text = 'Jurassic', command = lambda:[buttons.locations.jurassic(), buttons.phases.phase3a()]),
-                tk.Button(root, text = 'Ice Age', command = lambda:[buttons.locations.ice_age(), buttons.phases.phase3a()]),
-                tk.Button(root, text = 'City', command = lambda:[buttons.locations.city(), buttons.phases.phase3a()]),
-                tk.Button(root, text = 'Moon', command = lambda:[buttons.locations.moon(), buttons.phases.phase3a()]),
-                tk.Button(root, text = 'Mountain', command = lambda:[buttons.locations.mountain(), buttons.phases.phase3a()]),
-                tk.Button(root, text = 'Mars', command = lambda:[buttons.locations.mars(), buttons.phases.phase3a()])
-            ]
+            i = 1
+            for location in ['Farm', 'Outback', 'Savanna', 'Northern', 'Polar', 'Jungle', 'Jurassic', 'Ice Age', 'City', 'Moon', 'Mountain', 'Mars']:
+                tk.Button(root, text = location, command = lambda l=location:buttons.phases.phase3a(l)).grid(row=i, column=0)
+                i += 1
 
-            for i in range(len(locationButtons)):
-                locationButtons[i].grid(row = i+1, column = 0)
-        
         # ask for chosen animal 1
-        def phase3a():
-            global animalOptions
-
-            clearScreen()
+        def phase3a(location):
+            global locationName, animalOptions
+            locationName = location.lower().replace(' ', '_')
 
             animalOptions = calcAnimalOptions(locationName)
+            
+            clearScreen()
 
             label_askLocation = tk.Label(root, text = 'What is animal #1')
             label_askLocation.grid(row=0, column=0)
 
             animalButtons = []
             for i in range(len(animalOptions)):
-                animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda:[eval('buttons.animalOptionsClass.animal_' + str(i)), buttons.phases.phase3b()]))
-            
-            for i in range(len(animalButtons)):
-                animalButtons[i].grid(row = i+1, column = 0)
+                animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[eval('buttons.animalOptionsClass.animal_'+str(x)+'()'), buttons.phases.phase3b()]).grid(row = i+1, column = 0))
         
         # ask for chosen animal 2, if there is one
         def phase3b():
@@ -257,10 +190,7 @@ class buttons:
 
                 animalButtons = []
                 for i in range(len(animalOptions)):
-                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda:[eval('buttons.animalOptionsClass.animal_' + str(i)), buttons.phases.phase3c()]))
-                
-                for i in range(len(animalButtons)):
-                    animalButtons[i].grid(row = i+1, column = 0)
+                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[eval('buttons.animalOptionsClass.animal_'+str(x)+'()'), buttons.phases.phase3c()]).grid(row = i+1, column = 0))
             else:
                 buttons.phases.phase3c()
         
@@ -276,10 +206,7 @@ class buttons:
 
                 animalButtons = []
                 for i in range(len(animalOptions)):
-                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda:[eval('buttons.animalOptionsClass.animal_' + str(i)), buttons.phases.phase4()]))
-                
-                for i in range(len(animalButtons)):
-                    animalButtons[i].grid(row = i+1, column = 0)
+                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[eval('buttons.animalOptionsClass.animal_'+str(x)+'()'), buttons.phases.phase4()]).grid(row = i+1, column = 0))
             else:
                 buttons.phases.phase4()
         
@@ -287,6 +214,7 @@ class buttons:
             clearScreen()
 
             print('phase 4 activated')
+            print(selectedAnimals)
 
 
 def clearScreen():
