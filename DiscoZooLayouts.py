@@ -107,8 +107,6 @@ class pattern:
         marsmallow = [[1], [0], [1]]
 
 
-#----------FUNCTIONS----------
-
 class buttons:
     def newChosenAnimal(animalNum):
         global selectedAnimals, animalOptions
@@ -196,6 +194,8 @@ class buttons:
             print(selectedAnimals)
 
 
+#----------FUNCTIONS----------
+
 def clearScreen():
     widget_list = root.winfo_children()
 
@@ -207,7 +207,7 @@ def clearScreen():
         item.grid_remove()
 
 
-def combineArrays(baseArray, arrayToAdd, offset=(0, 0)):
+def combineArrays(baseArray, arrayToAdd, offset = (0, 0)):
     array1 = baseArray.copy()
     array2 = arrayToAdd.copy()
 
@@ -227,19 +227,18 @@ def combineArrays(baseArray, arrayToAdd, offset=(0, 0)):
 
 def calcAnimalOptions(location):
     switcher = {
-        'farm':'sheep, pig, rabbit, horse, cow, and unicorn',
-        'outback':'kangaroo, platypus, crocodile, koala, cockatoo, and tiddalik',
-        'savanna':'zebra, hippo, giraffe, lion, elephant, and gryphon',
-        'northern':'bear, skunk, beaver, moose, fox, and sasquatch',
-        'polar':'penguin, seal, muskox, polar bear, walrus, and yeti',
-        'jungle':'monkey, toucan, gorilla, panda, tiger, and phoenix',
-        'jurassic':'diplodocus, stegosaurus, raptor, t-rex, triceraptops, and dragon',
-        'ice age': 'wooly rhino, giant sloth, dire wolf, saber tooth, mammoth, and akhlut',
-        'city':'raccoon, pigeon, rat, squirrel, opossum, and sewer turtle',
-        'moon':'lunar tick, moonkey, tribble, luna moth, moonicorn, and jade rabbit',
-        'mountain': 'goat, cougar, elk, eagle, coyote, and aatxe',
-        'mars': 'rock, marsmot, marsmoset, rover, martian, and marsmallow'
-
+        'farm':['sheep', 'pig', 'rabbit', 'horse', 'cow', 'unicorn'],
+        'outback':['kangaroo', 'platypus', 'crocodile', 'koala', 'cockatoo', 'tiddalik'],
+        'savanna':['zebra', 'hippo', 'giraffe', 'lion', 'elephant', 'gryphon'],
+        'northern':['bear', 'skunk', 'beaver', 'moose', 'fox', 'sasquatch'],
+        'polar':['penguin', 'seal', 'muskox', 'polar bear', 'walrus', 'yeti'],
+        'jungle':['monkey', 'toucan', 'gorilla', 'panda', 'tiger', 'phoenix'],
+        'jurassic':['diplodocus', 'stegosaurus', 'raptor', 't-rex', 'triceraptops', 'dragon'],
+        'ice age':['wooly rhino', 'giant sloth', 'dire wolf', 'saber tooth', 'mammoth', 'akhlut'],
+        'city':['raccoon', 'pigeon', 'rat', 'squirrel', 'opossum', 'sewer turtle'],
+        'moon':['lunar tick', 'moonkey', 'tribble', 'luna moth', 'moonicorn', 'jade rabbit'],
+        'mountain':['goat', 'cougar', 'elk', 'eagle', 'coyote', 'aatxe'],
+        'mars':['rock', 'marsmot', 'marsmoset', 'rover', 'martian', 'marsmallow']
     }
 
     return switcher[location]
@@ -322,14 +321,12 @@ def printTotalLayouts():
 
 #----------THE MAIN STUFF----------
 if __name__ == "__main__":
-    identifyAnimals()
-    findAllLayouts()
-    printTotalLayouts()
+    button_start = tk.Button(root, text = 'start', command = buttons.phases.phase1)
+    button_start.grid(row=0, column=0)
 
-button_start = tk.Button(root, text = 'start', command = buttons.phases.phase1)
-button_start.grid(row=0, column=0)
+    root.mainloop()
 
-root.mainloop()
+
 '''
 identifyAnimals()
 findAllLayouts()
