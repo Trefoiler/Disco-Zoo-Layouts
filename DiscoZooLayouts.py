@@ -127,11 +127,11 @@ class buttons:
         def phase1():
             clearScreen()
 
-            label_askNumOfAnimals = tk.Label(root, text = 'How many animals are you going to chose?')
-            label_askNumOfAnimals.grid(row=0, column=0)
+            label_askNumOfAnimals = tk.Label(root, text = 'How many animals are\nyou going to chose?')
+            label_askNumOfAnimals.grid(row=0, column=0, columnspan=3)
             
             for n in range(1, 4):
-                tk.Button(root, text=n, command = lambda x=n:buttons.phases.phase2(x)).grid(row = n, column = 0)
+                tk.Button(root, text=n, command = lambda x=n:buttons.phases.phase2(x)).grid(row = 1, column = n-1, sticky='nesw')
 
         # ask for the location
         def phase2(numAnimals):
@@ -141,12 +141,13 @@ class buttons:
             clearScreen()
 
             label_askLocation = tk.Label(root, text = 'What location do you want to choose animals from?')
-            label_askLocation.grid(row=0, column=0)
+            label_askLocation.grid(row=0, column=0, columnspan=4)
 
-            i = 1
-            for location in ['Farm', 'Outback', 'Savanna', 'Northern', 'Polar', 'Jungle', 'Jurassic', 'Ice Age', 'City', 'Moon', 'Mountain', 'Mars']:
-                tk.Button(root, text = location, command = lambda l=location:buttons.phases.phase3a(l)).grid(row=i, column=0)
-                i += 1
+            locations = ['Farm', 'Outback', 'Savanna', 'Northern', 'Polar', 'Jungle', 'Jurassic', 'Ice Age', 'City', 'Moon', 'Mountain', 'Mars']
+            # runs for every location in locations
+            for i in range(len(locations)):
+                location = locations[i]
+                tk.Button(root, text = location, width=7, height=1, command = lambda l=location:buttons.phases.phase3a(l)).grid(row=int(i/4)+1, column=i%4, sticky='nesw')
 
         # ask for chosen animal 1
         def phase3a(location):
@@ -163,7 +164,7 @@ class buttons:
 
             animalButtons = []
             for i in range(len(animalOptions)):
-                animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[buttons.newChosenAnimal(x), buttons.phases.phase3b()]).grid(row = i+1, column = 0))
+                animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[buttons.newChosenAnimal(x), buttons.phases.phase3b()]).grid(row = i+1, column = 0, sticky='nesw'))
         
         # ask for chosen animal 2, if there is one
         def phase3b():
@@ -177,7 +178,7 @@ class buttons:
 
                 animalButtons = []
                 for i in range(len(animalOptions)):
-                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[buttons.newChosenAnimal(x), buttons.phases.phase3c()]).grid(row = i+1, column = 0))
+                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[buttons.newChosenAnimal(x), buttons.phases.phase3c()]).grid(row = i+1, column = 0, sticky='nesw'))
             else:
                 buttons.phases.phase3c()
         
@@ -193,7 +194,7 @@ class buttons:
 
                 animalButtons = []
                 for i in range(len(animalOptions)):
-                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[buttons.newChosenAnimal(x), buttons.phases.phase4()]).grid(row = i+1, column = 0))
+                    animalButtons.append(tk.Button(root, text = animalOptions[i], command = lambda x=i:[buttons.newChosenAnimal(x), buttons.phases.phase4()]).grid(row = i+1, column = 0, sticky='nesw'))
             else:
                 buttons.phases.phase4()
         
@@ -248,7 +249,7 @@ def calcAnimalOptions(location):
         'polar':['penguin', 'seal', 'muskox', 'polar bear', 'walrus', 'yeti'],
         'jungle':['monkey', 'toucan', 'gorilla', 'panda', 'tiger', 'phoenix'],
         'jurassic':['diplodocus', 'stegosaurus', 'raptor', 't-rex', 'triceraptops', 'dragon'],
-        'ice age':['wooly rhino', 'giant sloth', 'dire wolf', 'saber tooth', 'mammoth', 'akhlut'],
+        'ice_age':['wooly rhino', 'giant sloth', 'dire wolf', 'saber tooth', 'mammoth', 'akhlut'],
         'city':['raccoon', 'pigeon', 'rat', 'squirrel', 'opossum', 'sewer turtle'],
         'moon':['lunar tick', 'moonkey', 'tribble', 'luna moth', 'moonicorn', 'jade rabbit'],
         'mountain':['goat', 'cougar', 'elk', 'eagle', 'coyote', 'aatxe'],
@@ -264,7 +265,7 @@ def addPatternsToSA():
 
     for i in range(len(selectedAnimals)):
         animalName = selectedAnimals[i]
-        selectedAnimals[i] = [animalName, getattr(eval('patterns.'+locationName), animalName)]
+        selectedAnimals[i] = [animalName, getattr(eval('patterns.'+locationName), animalName.replace(' ', '_').replace('-', '_'))]
 
 
 # returns a list of all the layouts that can be made with the sent layout and animal pattern
