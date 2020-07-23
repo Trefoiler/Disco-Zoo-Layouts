@@ -326,36 +326,55 @@ def clearScreen():
 def displayTiles_a(arrayOfLayouts):
     global lastSetAfter, firstSetOfAfters
 
+    # runs if this is the first time displayTiles_a has ran
     if firstSetOfAfters:
+        # sets lastSetAfter to about the current time since no afters have been set
         lastSetAfter = time.time() + .1
+        # makes sure that this if statement won't run again
         firstSetOfAfters = False
     
+    # interval between the afters, in miliseconds
+    timeBetweenAfters = 250
+
+    # how long untill the last set after is set to occur
     secondsUntillLastAfter = lastSetAfter - time.time()
 
+    # runs for every layout in arrayOfLayouts
     for i in range(len(arrayOfLayouts)):
-        # in miliseconds
-        timeBetweenAfters = 500
-        timeUntillRun = i*timeBetweenAfters
-        timeUntillRun += int(secondsUntillLastAfter) * 1000
+        # the amount of time the after is set to occur after
+        timeUntillRun = i * timeBetweenAfters + int(round(secondsUntillLastAfter, 3) * 1000)
+
+        # displays a layout after timeUntillRun miliseconds
         root.after(timeUntillRun, lambda layout=arrayOfLayouts[i]:displayTiles_b(layout))
-        lastSetAfter = time.time() + (timeUntillRun / 1000) + 1
+
+        # the time that the last set after will occur
+        lastSetAfter = time.time() + (timeUntillRun / 1000) + (timeBetweenAfters / 1000)
 
 
 # clears the screen then displays the sent layout
 def displayTiles_b(layout):
     clearScreen()
 
+    # runs for every row in the layout
     for x in range(len(layout)):
+        # runs for every tile in the row
         for y in range(len(layout)):
+            # runs if the tile's value is 0
             if layout[y][x] == 0:
+                # displays a blank, square, button to represent the tile
                 tk.Button(root, state=tk.DISABLED, height=3, width=6).grid(row=y, column=x)
+            # runs if the tile's value is 1
             elif layout[y][x] == 1:
+                # displays a green, square, button to represent the tile
                 tk.Button(root, state=tk.DISABLED, height=3, width=6, bg='green').grid(row=y, column=x)
+            # runs if the tile's value is 2 or greater
             elif layout[y][x] >= 2:
+                # displays a red, square, button to represent the tile
                 tk.Button(root, state=tk.DISABLED, height=3, width=6, bg='red').grid(row=y, column=x)
 
 
 #----------THE MAIN STUFF----------
+
 if __name__ == "__main__":
     root.title('Disco Zoo Layouts')
 
