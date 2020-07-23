@@ -4,7 +4,6 @@ import time
 #----------VARIABLE DECLARATIONS----------
 
 root = tk.Tk()
-root.title('Disco Zoo Layouts')
 
 # 2D array for the 5x5 tile layout
 tiles = []
@@ -23,8 +22,9 @@ animalOptions = []
 # holds info on the chosen animals
 selectedAnimals = []
 
-# the time that the  last root.after is set to occur
+# the time that the last root.after is set to occur
 lastSetAfter = 0
+# causes displayTiles_a() to run differently the first time it runs
 firstSetOfAfters = True
 
 #----------CLASS DECLARATIONS-----------
@@ -151,12 +151,13 @@ class buttons:
         # ask for chosen animal 1
         def phase3a(location):
             global locationName, animalOptions
+            
+            clearScreen()
+
             locationName = location.lower().replace(' ', '_')
 
             animalOptions = calcAnimalOptions(locationName)
             
-            clearScreen()
-
             label_askLocation = tk.Label(root, text = 'What is animal #1')
             label_askLocation.grid(row=0, column=0)
 
@@ -237,74 +238,7 @@ class buttons:
 
 #----------FUNCTIONS----------
 
-def calcLayouts(layout1, layout2):
-    newArray = []
-    for y in range(6 - len(layout2)):
-        for x in range (6 - len(layout2[0])):
-            newArray.append(combineArrays(layout1, layout2, (x, y)))
-    return newArray
-
-
-def displayTiles_b(layout):
-    clearScreen()
-
-    for x in range(len(layout)):
-        for y in range(len(layout)):
-            if layout[y][x] == 0:
-                tk.Button(root, state=tk.DISABLED, height=3, width=6).grid(row=y, column=x)
-            elif layout[y][x] == 1:
-                tk.Button(root, state=tk.DISABLED, height=3, width=6, bg='green').grid(row=y, column=x)
-            elif layout[y][x] >= 2:
-                tk.Button(root, state=tk.DISABLED, height=3, width=6, bg='red').grid(row=y, column=x)
-
-
-def displayTiles_a(arrayOfLayouts):
-    global lastSetAfter, firstSetOfAfters
-
-    if firstSetOfAfters:
-        lastSetAfter = time.time() + .1
-        firstSetOfAfters = False
-    
-    secondsUntillLastAfter = lastSetAfter - time.time()
-
-    for i in range(len(arrayOfLayouts)):
-        # in miliseconds
-        timeBetweenAfters = 200
-        timeUntillRun = i*timeBetweenAfters
-        timeUntillRun += int(secondsUntillLastAfter) * 1000
-        root.after(timeUntillRun, lambda layout=arrayOfLayouts[i]:displayTiles_b(layout))
-        lastSetAfter = time.time() + (timeUntillRun / 1000) + (timeBetweenAfters / 1000 * 2)
-
-
-def clearScreen():
-    widget_list = root.winfo_children()
-
-    for item in widget_list :
-        if item.winfo_children() :
-            widget_list.extend(item.winfo_children())
-    
-    for item in widget_list:
-        item.grid_remove()
-
-
-def combineArrays(baseArray, arrayToAdd, offset = (0, 0)):
-    array1 = baseArray.copy()
-    array2 = arrayToAdd.copy()
-
-    offX = offset[1]
-    offY = offset[0]
-
-    newArray = []
-    for i in range(len(array1)):
-        newArray.append(array1[i].copy())
-
-    for i in range(len(array2)):
-        for j in range(len(array2[0])):
-            newArray[i+offX][j+offY] = array1[i+offX][j+offY] + array2[i][j]
-
-    return newArray
-
-
+# returns a list of all the animal names from the location sent to it
 def calcAnimalOptions(location):
     switcher = {
         'farm':['sheep', 'pig', 'rabbit', 'horse', 'cow', 'unicorn'],
@@ -333,6 +267,35 @@ def addPatternsToSA():
         selectedAnimals[i] = [animalName, getattr(eval('patterns.'+locationName), animalName)]
 
 
+# returns a list of all the layouts that can be made with the sent layout and animal pattern
+def calcLayouts(layout1, animalPat):
+    newArray = []
+    for y in range(6 - len(animalPat)):
+        for x in range (6 - len(animalPat[0])):
+            newArray.append(combineArrays(layout1, animalPat, (x, y)))
+    return newArray
+
+
+# combines 2 2d arrays with an offset
+def combineArrays(baseArray, arrayToAdd, offset = (0, 0)):
+    array1 = baseArray.copy()
+    array2 = arrayToAdd.copy()
+
+    offX = offset[1]
+    offY = offset[0]
+
+    newArray = []
+    for i in range(len(array1)):
+        newArray.append(array1[i].copy())
+
+    for i in range(len(array2)):
+        for j in range(len(array2[0])):
+            newArray[i+offX][j+offY] = array1[i+offX][j+offY] + array2[i][j]
+
+    return newArray
+
+
+# returns True or False depending on if the sent layout is valid
 def checkForValidLayout(layout):
     possibleLayout = True
 
@@ -347,76 +310,56 @@ def checkForValidLayout(layout):
         return False
 
 
-def identifyAnimals():
-    global selectedAnimals
+# clears the Tkinter window of all widgets
+def clearScreen():
+    widget_list = root.winfo_children()
 
-    locationName = input('Locations are farm, outback, savanna, northern, polar, jungle, jurassic, ice age, city, moon, mountain, and mars. What location do you want to choose animals from?: ').lower()
-    locationName = locationName.replace(' ', '_')
-    numOfAnimals = int(input('How many animals are you going to choose? Options are 1-3: '))
-
-    for i in range(numOfAnimals):
-        animalOptions = calcAnimalOptions(locationName)
-
-        inputMSG = '{} animals are {}. What is animal number {}?: '.format(locationName.capitalize(), animalOptions, i+1)
-        animal = input(inputMSG).lower().replace(' ', '_').replace('-', '_')
-
-        selectedAnimals.append([animal, getattr(eval('patterns.'+locationName), animal)])
+    for item in widget_list :
+        if item.winfo_children() :
+            widget_list.extend(item.winfo_children())
+    
+    for item in widget_list:
+        item.grid_remove()
 
 
-def findAllLayouts():
-    global totalLayouts
+# creates "afters" which will display layouts between intervals
+def displayTiles_a(arrayOfLayouts):
+    global lastSetAfter, firstSetOfAfters
 
-    # how many times to go across x
-    for x1 in range(6 - len(selectedAnimals[0][1][0])):
-        # how many times to go across y
-        for y1 in range(6 - len(selectedAnimals[0][1])):
-            tiles1 = combineArrays(tiles, selectedAnimals[0][1], (x1, y1))
+    if firstSetOfAfters:
+        lastSetAfter = time.time() + .1
+        firstSetOfAfters = False
+    
+    secondsUntillLastAfter = lastSetAfter - time.time()
 
-            # runs if theres more than 1 animal
-            if len(selectedAnimals) > 1:
-                # how many times to go across x
-                for x2 in range(6 - len(selectedAnimals[1][1][0])):
-                    # how many times to go across y
-                    for y2 in range(6 - len(selectedAnimals[1][1])):
-                        tiles2 = combineArrays(tiles1, selectedAnimals[1][1], (x2, y2))
-
-                        # runs if the layout works for the first 2 animals
-                        if checkForValidLayout(tiles2):
-                            # runs if theres more than 2 animals
-                            if len(selectedAnimals) > 2:
-                                # how many times to go across x
-                                for x3 in range(6 - len(selectedAnimals[2][1][0])):
-                                    # how many times to go across y
-                                    for y3 in range(6 - len(selectedAnimals[2][1])):
-                                        tiles3 = combineArrays(tiles2, selectedAnimals[2][1], (x3, y3))
-
-                                        if checkForValidLayout(tiles3):
-                                            totalLayouts += 1
-                            else:
-                                totalLayouts += 1
-            else:
-                totalLayouts += 1
+    for i in range(len(arrayOfLayouts)):
+        # in miliseconds
+        timeBetweenAfters = 500
+        timeUntillRun = i*timeBetweenAfters
+        timeUntillRun += int(secondsUntillLastAfter) * 1000
+        root.after(timeUntillRun, lambda layout=arrayOfLayouts[i]:displayTiles_b(layout))
+        lastSetAfter = time.time() + (timeUntillRun / 1000) + 1
 
 
-def printTotalLayouts():
-    if len(selectedAnimals) == 1:
-        print('There are', str(totalLayouts), 'total layouts for the animal', selectedAnimals[0][0])
-    elif len(selectedAnimals) == 2:
-        print('There are', str(totalLayouts), 'total layouts for the animals', selectedAnimals[0][0], 'and', selectedAnimals[1][0])
-    else:
-        print('There are', str(totalLayouts), 'total layouts for the animals', selectedAnimals[0][0] + ',', selectedAnimals[1][0] + ',', 'and a', selectedAnimals[2][0])
+# clears the screen then displays the sent layout
+def displayTiles_b(layout):
+    clearScreen()
+
+    for x in range(len(layout)):
+        for y in range(len(layout)):
+            if layout[y][x] == 0:
+                tk.Button(root, state=tk.DISABLED, height=3, width=6).grid(row=y, column=x)
+            elif layout[y][x] == 1:
+                tk.Button(root, state=tk.DISABLED, height=3, width=6, bg='green').grid(row=y, column=x)
+            elif layout[y][x] >= 2:
+                tk.Button(root, state=tk.DISABLED, height=3, width=6, bg='red').grid(row=y, column=x)
 
 
 #----------THE MAIN STUFF----------
 if __name__ == "__main__":
+    root.title('Disco Zoo Layouts')
+
     button_start = tk.Button(root, text = 'start', command = buttons.phases.phase1)
     button_start.grid(row=0, column=0)
 
     root.mainloop()
-
-
-'''
-identifyAnimals()
-findAllLayouts()
-printTotalLayouts()
-'''
