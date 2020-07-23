@@ -233,8 +233,6 @@ class buttons:
             else:
                 totalLayouts += len(tiles1)
                 displayTiles_a(tiles1)
-            
-            print(totalLayouts)
 
 
 #----------FUNCTIONS----------
@@ -329,10 +327,13 @@ def displayTiles_a(arrayOfLayouts):
 
     # runs if this is the first time displayTiles_a has ran
     if firstSetOfAfters:
-        # sets lastSetAfter to about the current time since no afters have been set
-        lastSetAfter = time.time() + .1
         # makes sure that this if statement won't run again
         firstSetOfAfters = False
+        # sets lastSetAfter to the current time (plus some) since no afters have been set
+        lastSetAfter = time.time() + 1
+
+        clearScreen()
+        calculatingLabel = tk.Button(root, text='Calculating layouts...').grid(row=0, column=0)
     
     # interval between the afters, in miliseconds
     timeBetweenAfters = 250
@@ -352,9 +353,18 @@ def displayTiles_a(arrayOfLayouts):
         lastSetAfter = time.time() + (timeUntillRun / 1000) + (timeBetweenAfters / 1000)
 
 
-# clears the screen then displays the sent layout
+# clears the screen then displays the sent layout and the total number of layouts
 def displayTiles_b(layout):
     clearScreen()
+
+    if len(selectedAnimals) == 1:
+        layoutsMsg = 'There are {} total valid layouts\nwith the animal {}.'.format(totalLayouts, selectedAnimals[0][0])
+    elif len(selectedAnimals) == 2:
+        layoutsMsg = 'There are {} total valid layouts with\nthe animals {} and {}.'.format(totalLayouts, selectedAnimals[0][0], selectedAnimals[1][0])
+    else:
+        layoutsMsg = 'There are {} total valid layouts with the\nanimals {}, {}, and {}.'.format(totalLayouts, selectedAnimals[0][0], selectedAnimals[1][0], selectedAnimals[2][0])
+    tk.Label(root, text=layoutsMsg).grid(row=0, column=0)
+    tk.Label(root, text='Now displaying all the layouts.').grid(row=1, column=0)
 
     # runs for every row in the layout
     for x in range(len(layout)):
@@ -363,15 +373,15 @@ def displayTiles_b(layout):
             # runs if the tile's value is 0
             if layout[y][x] == 0:
                 # displays a blank, square, button to represent the tile
-                tk.Button(root, state=tk.DISABLED, height=3, width=6).grid(row=y, column=x)
+                tk.Button(root, state=tk.DISABLED, height=3, width=6).grid(row=y, column=x+1)
             # runs if the tile's value is 1
             elif layout[y][x] == 1:
                 # displays a green, square, button to represent the tile
-                tk.Button(root, state=tk.DISABLED, height=3, width=6, bg='green').grid(row=y, column=x)
+                tk.Button(root, state=tk.DISABLED, height=3, width=6, bg='green').grid(row=y, column=x+1)
             # runs if the tile's value is 2 or greater
             elif layout[y][x] >= 2:
                 # displays a red, square, button to represent the tile
-                tk.Button(root, state=tk.DISABLED, height=3, width=6, bg='red').grid(row=y, column=x)
+                tk.Button(root, state=tk.DISABLED, height=3, width=6, bg='red').grid(row=y, column=x+1)
 
 
 #----------THE MAIN STUFF----------
